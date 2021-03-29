@@ -1,5 +1,5 @@
-import { Response } from "express";
-import readAsset, { Asset } from "./readAsset";
+import { Request, Response } from 'express';
+import readAsset, { Asset, ReadAssetErrorType } from './readAsset';
 
 /**
  * Send the requested asset back to the client. Also includes error handling if the file cannot be accessed.
@@ -11,23 +11,22 @@ export default function sendAsset(url: string, response: Response<any, any>): vo
   readAsset(url).then(
     (asset: Asset) => {
       if (!asset.error) {
-        response.send(asset.content);
+        response.send(asset.data);
         return;
       }
 
-      switch (asset.error.code) {
-        case 'ENOENT':
-          response.status(404).send(`Cannot find resource '${url}'`);
-          break;
-        default:
-          // Probably don't want to send all of these details to the user.
-          // For now, this is acceptable.
-          response.status(500)
-            .send(`Cannot access resource '${url}'.\nError Code: '${asset.error.code}'\nMessage: '${asset.error.message}'`);
+      if (asset.error.type === ReadAssetErrorType.READ_FILE && asset.error.details.code === 'ENOENT') {
+        response.status(404).send(`Cannot find resource '${url}'`);
+        return;
       }
+
+      response.status(500).send(`Cannot access resource '${url}'\nError Message: '${asset.error.message}'`);
     },
 
-    // getAsset should never throw/reject, so this implies that some unknown error occurred.
-    (error) => response.status(500).send(error),
+    // readAsset should never throw/reject, so this implies that some unknown error occurred.
+    (error) => {
+      console.log(error);
+      response.status(500).send('Unknown internal server error');
+    },
   );
 }

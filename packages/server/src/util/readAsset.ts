@@ -1,53 +1,71 @@
-import { Request } from "express";
 import fs from 'fs';
 import path from 'path';
+import { Result } from '../types';
 
-/**
- * Describes an asset requested by the client.
- */
-export type Asset = {
+export enum ReadAssetErrorType {
+  READ_FILE = 'READ_FILE',
+  VALIDATION = 'VALIDATION',
+}
 
-  /** URL requested by the client. */
+type BaseReadAssetError = {
+  filePath: string;
   url: string;
+  message: string;
+}
 
-  /** File path that was read. */
-  path: string;
-} & ({
+type ReadFileError = {
+  type: ReadAssetErrorType.READ_FILE;
+  details: NodeJS.ErrnoException;
+};
 
-  /** Content to return to client. */
-  content: string;
+type ValidateAssetError = {
+  type: ReadAssetErrorType.VALIDATION;
+  details: string;
+  message: string;
+}
 
-  /** Error thrown when attempting to access asset. */
-  error: undefined;
-} | {
+export type ReadAssetError = BaseReadAssetError & (ReadFileError | ValidateAssetError);
 
-  /** Content to return to client. */
-  content: undefined;
+export type AssetValidator<T = string> = (data: any) => Result<T, ValidateAssetError>;
 
-  /** Error thrown when attempting to access asset. */
-  error: NodeJS.ErrnoException;
-});
+export type Asset<T = string> = Result<T, ReadAssetError>;
 
-export default function readAsset(url: string): Promise<Asset> {
-  const assetPath = path.join(__dirname, url);
+export default function readAsset<T = string>(
+  url: string,
+  validateAsset: AssetValidator<T> = data => ({ data, error: undefined }),
+): Promise<Asset<T>> {
+  const filePath = path.join(__dirname, url);
 
-  return new Promise((resolve, reject) => {
-    fs.readFile(assetPath, { encoding: 'utf-8' }, (error, content) => {
+  return new Promise((resolve) => {
+    fs.readFile(filePath, { encoding: 'utf-8' }, (error, data) => {
       if (error) {
         resolve({
-          path: assetPath,
-          url,
-          content: undefined,
-          error,
+          data: undefined,
+          error: {
+            message: `Cannot access '${url}'`,
+            type: ReadAssetErrorType.READ_FILE,
+            details: error,
+            filePath,
+            url,
+          },
         });
         return;
       }
 
+      const validated = validateAsset(data);
+
+      if (!validated.error) {
+        resolve(validated);
+        return;
+      }
+
       resolve({
-        path: assetPath,
-        url,
-        content,
-        error: undefined,
+        data: undefined,
+        error: {
+          ...validated.error,
+          filePath,
+          url,
+        },
       });
     })
   });

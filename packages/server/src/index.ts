@@ -1,9 +1,14 @@
 import express from 'express';
-import { getRequestType, RequestType, sendAsset } from './util';
-import weatherApi from './weather';
+import { getRequestType, RequestType, sendAsset, sendPrivateAsset } from './util';
 
 const app = express();
-const port = 3000;
+
+const serverSettings = {
+  origin: {
+    port: 3000,
+    hostname: 'localhost',
+  },
+};
 
 app.get('/*', (request, response) => {
   const requestType = getRequestType(request.url);
@@ -13,7 +18,7 @@ app.get('/*', (request, response) => {
       response.status(404).send(`Call to Unknown API: '${request.url}'`);
       break;
     case RequestType.API_WEATHER:
-      weatherApi(request, response);
+      sendPrivateAsset('weather-api.json', request, response, serverSettings);
       break;
     case RequestType.BANNED:
       response.status(403).send(`Access to '${request.url}' is not allowed.`);
@@ -27,6 +32,6 @@ app.get('/*', (request, response) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`App is being hosted at http://localhost:${port}`);
+app.listen(serverSettings.origin.port, () => {
+  console.log(`App is being hosted at http://${serverSettings.origin.hostname}:${serverSettings.origin.port}`);
 });
