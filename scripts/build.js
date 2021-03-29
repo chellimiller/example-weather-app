@@ -5,7 +5,6 @@ const path = require('path');
 const ROOT_DIRECTORY = path.dirname(__dirname);
 
 const ROOT_PUBLIC_DIRECTORY = path.join(ROOT_DIRECTORY, 'public');
-const ROOT_CONFIG_DIRECTORY = path.join(ROOT_DIRECTORY, 'config');
 const ROOT_BUILD_DIRECTORY = path.join(ROOT_DIRECTORY, 'build');
 const PACKAGES_DIRECTORY = path.join(ROOT_DIRECTORY, 'packages');
 
@@ -53,10 +52,6 @@ function combineBuilds() {
 
   if (fs.existsSync(ROOT_PUBLIC_DIRECTORY)) {
     copyFolder(ROOT_PUBLIC_DIRECTORY, ROOT_BUILD_DIRECTORY);
-  }
-
-  if (fs.existsSync(ROOT_CONFIG_DIRECTORY)) {
-    copyFolder(ROOT_CONFIG_DIRECTORY, path.join(ROOT_BUILD_DIRECTORY, 'config'));
   }
 
   fs.readdirSync(PACKAGES_DIRECTORY).forEach(package => {
