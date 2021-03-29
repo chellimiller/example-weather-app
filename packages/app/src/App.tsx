@@ -1,31 +1,32 @@
-import React, { lazy, Suspense } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-const About = lazy(() => import("./About"));
-const Home = lazy(() => import("./Home"));
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { withWeatherApiConfig } from './context/WeatherApiConfigContext';
+const About = lazy(() => import('./About'));
+const Home = lazy(() => import('./Home'));
 
-const App: React.FC = () => (
+const App: React.FC = withWeatherApiConfig(() => (
   <Router>
     <Suspense fallback={<div>Loading...</div>}>
       <nav>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to='/'>Home</Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link to='/about'>About</Link>
           </li>
         </ul>
       </nav>
       <Switch>
-        <Route path="/about">
+        <Route path='/about'>
           <About />
         </Route>
-        <Route path="/">
+        <Route path='/'>
           <Home />
         </Route>
       </Switch>
     </Suspense>
   </Router>
-);
+));
 
 export default App;

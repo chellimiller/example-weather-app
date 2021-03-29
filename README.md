@@ -11,7 +11,18 @@ Lerna also allows us to still manage these separate projects together.
 
 ## Usage Instructions
 
-1. Use the template to create your project repository in Github.
-1. Clone your project and run `npm run setup`.
+1. Clone the project.
+1. Run `npm run setup`.
+1. Get an API key from https://openweathermap.org/.
+1. Create a file `./config/weather-api.json`. The file should look like the example below.
 1. Run `npm start` to start the server.
 1. Open http://localhost:3000/ in a browser window.
+
+### Example `./config/weather-api.json`
+
+```json
+{
+  "key": "YOUR_KEY_HERE",
+  "type": "openweathermap.org"
+}
+```

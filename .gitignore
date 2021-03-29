@@ -1,5 +1,8 @@
 ## Build Output
 build
 
+## Private Configuration
+config
+
 ## Dependencies
 node_modules
