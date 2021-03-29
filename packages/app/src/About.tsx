@@ -1,17 +1,21 @@
-import React, { useEffect } from "react";
+import React from 'react';
+import { useWeatherApiConfig } from './context/WeatherApiConfigContext';
+import { ResultStatus } from './types';
 
 const About: React.FC = () => {
-  useEffect(() => {
-    fetch('http://localhost:3000/api/weather').then(
-      (config) => {
-        console.log(config.text());
-      }, (error) => {
-        console.log(error)
-      });
-  }, [])
-  return (
-    <h1>This is a PWA</h1>
-  );
+
+  const weatherApiConfig = useWeatherApiConfig();
+
+  switch (weatherApiConfig.status) {
+    case ResultStatus.DATA_LOAD:
+      return (
+        <h1>This is an app that accesses the Weather API: {weatherApiConfig.data.type}</h1>
+      );
+    default:
+      return (
+        <h1>{weatherApiConfig.message}</h1>
+      );
+  }
 }
 
 export default About;
