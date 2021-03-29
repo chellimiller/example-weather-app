@@ -3,10 +3,14 @@ import { getWeatherByCity } from './api';
 import { useWeatherApiConfig } from './context/WeatherApiConfigContext';
 import { ResultStatus } from './types';
 
+/**
+ * @todo #6 Remove this component.
+ */
 const About: React.FC = () => {
 
   const weatherApiConfig = useWeatherApiConfig();
 
+  // @todo #6 Move this into a `useWeatherByCity` hook.
   useEffect(() => {
     if (weatherApiConfig.status === ResultStatus.DATA_LOAD) {
       getWeatherByCity('London', weatherApiConfig.data).then(result => {
