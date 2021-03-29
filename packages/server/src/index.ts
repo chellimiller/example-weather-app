@@ -1,19 +1,14 @@
 import express, { Response } from 'express';
 import fs from 'fs';
 import path from 'path';
+import { getRequestType, RequestType } from './util';
 
 const app = express();
 const port = 3000;
 
-const FILENAME_REGEX = /\.\w+$/;
-
-function isFileResource(resourcePath: string) {
-  return !!resourcePath.match(FILENAME_REGEX);
-}
-
 function getResource(resourcePath: string, response: Response<any, any>): void {
   try {
-    const resource = fs.readFileSync(path.join(__dirname, resourcePath), {encoding: 'utf-8'});
+    const resource = fs.readFileSync(path.join(__dirname, resourcePath), { encoding: 'utf-8' });
     response.send(resource);
   } catch (error) {
     // Not a great way to handle this, as the error could be something other than 'not found'.
@@ -23,13 +18,22 @@ function getResource(resourcePath: string, response: Response<any, any>): void {
   }
 }
 
-app.get('/*', (req, res) => {
-  if (req.url.startsWith('/api/')) {
-    res.send(`API call to ${req.url}`);
-  } else if (isFileResource(req.url)) {
-    getResource(req.url, res);
-  } else {
-    getResource('index.html', res);
+app.get('/*', (request, response) => {
+  const requestType = getRequestType(request.url);
+
+  switch (requestType) {
+    case RequestType.API:
+      response.send(`API call to '${request.url}'`);
+      break;
+    case RequestType.BANNED:
+      response.status(403).send(`Access to '${request.url}' is not allowed.`);
+      break;
+    case RequestType.ASSET:
+      getResource(request.url, response);
+      break;
+    case RequestType.ROUTE:
+    default:
+      getResource('index.html', response);
   }
 });
 
