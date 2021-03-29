@@ -1,0 +1,31 @@
+{
+  "name": "worker",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {},
+  "scripts": {
+    "build": "webpack --mode production",
+    "test": "jest --passWithNoTests"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "clean-webpack-plugin": "^3.0.0",
+    "jest": "^26.6.0",
+    "ts-loader": "^8.0.17",
+    "typescript": "^4.1.5",
+    "webpack": "^5.24.1",
+    "webpack-cli": "^4.5.0"
+  }
+}
