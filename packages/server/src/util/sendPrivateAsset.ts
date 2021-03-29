@@ -1,8 +1,8 @@
 import path from 'path';
 import { Request, Response } from 'express';
+import { ServerSettings } from '../types';
 import isSameOrigin from './isSameOrigin';
 import sendAsset from './sendAsset';
-import { ServerSettings } from './validateServerSettings';
 
 /**
  * Send the requested asset back to the client if the request is coming from the same origin.

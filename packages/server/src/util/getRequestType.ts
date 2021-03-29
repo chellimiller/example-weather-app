@@ -1,3 +1,6 @@
+/**
+ * Type of request being made by the client.
+ */
 export enum RequestType {
 
   /**
@@ -33,7 +36,7 @@ export enum RequestType {
 const FILENAME_REGEX = /\.\w+$/;
 
 /**
- * Determine the type of request that was made.
+ * Determine the type of request that was made by the client.
  * This will help us determine what should be sent back.
  *
  * @param url URL from the request.

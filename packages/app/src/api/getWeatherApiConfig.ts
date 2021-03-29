@@ -2,7 +2,7 @@ import { ResultStatus, WeatherApiConfig, WeatherApiConfigType } from '../types';
 import sendFetchRequest, { FetchResult } from './sendFetchRequest';
 
 export default function getWeatherApiConfig(): Promise<FetchResult<WeatherApiConfig>> {
-  return sendFetchRequest('/api/weather').then(
+  return sendFetchRequest('http://localhost:3000/api/weather').then(
     (result: FetchResult<Response>) => {
       if (result.status === ResultStatus.DATA_LOAD) {
         return result.data.json().then(

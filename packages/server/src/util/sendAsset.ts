@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
-import readAsset, { Asset, ReadAssetErrorType } from './readAsset';
+import { Response } from 'express';
+import { Asset, ReadAssetErrorType } from '../types';
+import readAsset from './readAsset';
 
 /**
  * Send the requested asset back to the client. Also includes error handling if the file cannot be accessed.
@@ -7,8 +8,8 @@ import readAsset, { Asset, ReadAssetErrorType } from './readAsset';
  * @param url URL requested by the client.
  * @param response Response sent back to client.
  */
-export default function sendAsset(url: string, response: Response<any, any>): void {
-  readAsset(url).then(
+export default function sendAsset(url: string, response: Response<any, any>): Promise<void> {
+  return readAsset(url).then(
     (asset: Asset) => {
       if (!asset.error) {
         response.send(asset.data);

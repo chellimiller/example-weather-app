@@ -1,43 +1,22 @@
-import fs from 'fs';
-import path from 'path';
-import { Result } from '../types';
+import { readFile } from 'fs';
+import { join } from 'path';
+import { Asset, AssetValidator, ReadAssetErrorType } from '../types';
 
-export enum ReadAssetErrorType {
-  READ_FILE = 'READ_FILE',
-  VALIDATION = 'VALIDATION',
-}
-
-type BaseReadAssetError = {
-  filePath: string;
-  url: string;
-  message: string;
-}
-
-type ReadFileError = {
-  type: ReadAssetErrorType.READ_FILE;
-  details: NodeJS.ErrnoException;
-};
-
-type ValidateAssetError = {
-  type: ReadAssetErrorType.VALIDATION;
-  details: string;
-  message: string;
-}
-
-export type ReadAssetError = BaseReadAssetError & (ReadFileError | ValidateAssetError);
-
-export type AssetValidator<T = string> = (data: any) => Result<T, ValidateAssetError>;
-
-export type Asset<T = string> = Result<T, ReadAssetError>;
-
+/**
+ * Reads an asset's contents and validates the asset type structure if `validateAsset` is provided.
+ *
+ * @param url Asset URL requested. This is joined with `__dirname`.
+ * @param validateAsset Function to validate the asset type.
+ * @returns Promise with the result from reading the asset.
+ */
 export default function readAsset<T = string>(
   url: string,
   validateAsset: AssetValidator<T> = data => ({ data, error: undefined }),
 ): Promise<Asset<T>> {
-  const filePath = path.join(__dirname, url);
+  const filePath = join(__dirname, url);
 
   return new Promise((resolve) => {
-    fs.readFile(filePath, { encoding: 'utf-8' }, (error, data) => {
+    readFile(filePath, { encoding: 'utf-8' }, (error, data) => {
       if (error) {
         resolve({
           data: undefined,
@@ -63,6 +42,7 @@ export default function readAsset<T = string>(
         data: undefined,
         error: {
           ...validated.error,
+          type: ReadAssetErrorType.VALIDATION,
           filePath,
           url,
         },

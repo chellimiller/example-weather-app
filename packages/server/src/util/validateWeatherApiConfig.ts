@@ -1,14 +1,11 @@
-import { AssetValidator, ReadAssetErrorType } from './readAsset';
+import { AssetValidator, ReadAssetErrorType, WeatherApiConfig, WeatherApiConfigType } from '../types';
 
-export enum WeatherApiConfigType {
-  OPEN_WEATHER_MAP = 'openweathermap.org',
-}
-
-export type WeatherApiConfig = {
-  type: WeatherApiConfigType;
-  key: string;
-}
-
+/**
+ * Validate that the `config` provided matches the `WeatherApiConfig` type definition.
+ *
+ * @param config Unvalidated Weather API configuration
+ * @returns Result from validating the Weather API configuration
+ */
 const validateWeatherApiConfig: AssetValidator<WeatherApiConfig> = (config: any) => {
   if (typeof config !== 'object') {
     const message = `Invalid Weather API Config: Type of 'config' should be 'object' but is '${typeof config}'`;

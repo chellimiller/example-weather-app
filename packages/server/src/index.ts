@@ -3,15 +3,14 @@ import { getRequestType, RequestType, sendAsset, sendPrivateAsset } from './util
 
 const app = express();
 
-const serverSettings = {
-  origin: {
-    port: 3000,
-    hostname: 'localhost',
-  },
-};
+const port = 3000;
 
 app.get('/*', (request, response) => {
   const requestType = getRequestType(request.url);
+
+  // @todo Determine if this is the hostname of the server, not the hostname of the request origin.
+  const hostname = request.hostname;
+  const serverSettings = { hostname, port };
 
   switch (requestType) {
     case RequestType.API:
@@ -32,6 +31,6 @@ app.get('/*', (request, response) => {
   }
 });
 
-app.listen(serverSettings.origin.port, () => {
-  console.log(`App is being hosted at http://${serverSettings.origin.hostname}:${serverSettings.origin.port}`);
+app.listen(port, () => {
+  console.log(`App is being hosted at http://localhost:${port}`);
 });
