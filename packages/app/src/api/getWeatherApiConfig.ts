@@ -1,8 +1,13 @@
-import { ResultStatus, WeatherApiConfig, WeatherApiConfigType } from '../types';
+import { ResultStatus, WeatherApiConfig } from '../types';
 import sendFetchRequest, { FetchResult } from './sendFetchRequest';
 
+/**
+ * Request the `WeatherApiConfig` from the server.
+ *
+ * @returns Promise with result from accessing the `WeatherApiConfig` from the server.
+ */
 export default function getWeatherApiConfig(): Promise<FetchResult<WeatherApiConfig>> {
-  return sendFetchRequest('http://localhost:3000/api/weather').then(
+  return sendFetchRequest('/api/weather').then(
     (result: FetchResult<Response>) => {
       if (result.status === ResultStatus.DATA_LOAD) {
         return result.data.json().then(
@@ -12,7 +17,7 @@ export default function getWeatherApiConfig(): Promise<FetchResult<WeatherApiCon
             data,
           }),
 
-          // @todo Figure out why this needs to be casted as any.
+          // @todo #5 Figure out why this needs to be casted as any.
           (error) => ({
             status: ResultStatus.ERROR,
             message: 'Cannot parse Weather API configuration',

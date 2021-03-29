@@ -8,7 +8,7 @@ const port = 3000;
 app.get('/*', (request, response) => {
   const requestType = getRequestType(request.url);
 
-  // @todo Determine if this is the hostname of the server, not the hostname of the request origin.
+  // @todo #2 Determine if this is the hostname of the server, not the hostname of the request origin.
   const hostname = request.hostname;
   const serverSettings = { hostname, port };
 
