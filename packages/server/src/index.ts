@@ -1,5 +1,6 @@
 import express from 'express';
 import { getRequestType, RequestType, sendAsset } from './util';
+import weatherApi from './weather';
 
 const app = express();
 const port = 3000;
@@ -9,7 +10,10 @@ app.get('/*', (request, response) => {
 
   switch (requestType) {
     case RequestType.API:
-      response.send(`API call to '${request.url}'`);
+      response.status(404).send(`Call to Unknown API: '${request.url}'`);
+      break;
+    case RequestType.API_WEATHER:
+      weatherApi(request, response);
       break;
     case RequestType.BANNED:
       response.status(403).send(`Access to '${request.url}' is not allowed.`);

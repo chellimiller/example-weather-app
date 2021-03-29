@@ -3,9 +3,14 @@ import { Request } from "express";
 export enum RequestType {
 
   /**
-   * This is an API request.
+   * This is an unknown API request.
    */
   API = 'API',
+
+  /**
+   * This is a Weather API request.
+   */
+  API_WEATHER = 'API_WEATHER',
 
   /**
    * This is a request for a file.
@@ -38,7 +43,10 @@ const FILENAME_REGEX = /\.\w+$/;
  */
 export default function getRequestType(url: string): RequestType {
   // Determine if the request is to the API.
-  if (url.startsWith('/api/') || url === '/api') return RequestType.API;
+  if (url.startsWith('/api/') || url === '/api') {
+    if (url.startsWith('/api/weather/') || url === '/api/weather') return RequestType.API_WEATHER;
+    return RequestType.API;
+  }
 
   // Determine if the file ends with `.someword`.
   if (!!url.match(FILENAME_REGEX)) {
