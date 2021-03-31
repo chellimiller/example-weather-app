@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { getWeatherByCity } from './api';
+import { getCurrentWeather } from './api';
 import { useWeatherApiConfig } from './context/WeatherApiConfigContext';
-import { ResultStatus } from './types';
+import { LocationType, ResultStatus } from './types';
 
 /**
  * @todo #6 Remove this component.
@@ -13,12 +13,12 @@ const About: React.FC = () => {
   // @todo #6 Move this into a `useWeatherByCity` hook.
   useEffect(() => {
     if (weatherApiConfig.status === ResultStatus.DATA_LOAD) {
-      getWeatherByCity('London', weatherApiConfig.data).then(result => {
+      getCurrentWeather({ city: 'London', type: LocationType.CITY_NAME }, weatherApiConfig.data).then(result => {
         if (result.status === ResultStatus.DATA_LOAD) {
-          if (result.data.ok) {
-            console.log('London', result.data.json());
+          if (result.data) {
+            console.log('London', result.data);
           } else {
-            console.error(result.data.text(), result.data);
+            console.error(result.data, result.data);
           }
         } else {
           console.error(result);
