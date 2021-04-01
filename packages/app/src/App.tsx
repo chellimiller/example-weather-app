@@ -4,6 +4,7 @@ import useCurrentWeather from './hooks/useCurrentWeather';
 import { Location, LocationType, ResultStatus, Weather } from './types';
 import LocationSearch from './ui/LocationSearch';
 import './App.css';
+import { withStore } from './store';
 
 const calculateBackgroundTemperature = (weather?: Weather) => {
   if (!weather) return '';
@@ -24,7 +25,7 @@ const DEFAULT_LOCATION: Location = {
   city: 'Scottsdale',
 }
 
-const App: React.FC = withWeatherApiConfig(() => {
+const App: React.FC = withStore(withWeatherApiConfig(() => {
   const [location, setLocation] = useState<Location>();
 
   const doUpdateLocation = (_e: unknown, value?: Location) => setLocation(value);
@@ -41,6 +42,6 @@ const App: React.FC = withWeatherApiConfig(() => {
       </div>
     </div>
   );
-});
+}));
 
 export default App;
