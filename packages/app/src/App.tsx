@@ -1,32 +1,22 @@
-import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { withWeatherApiConfig } from './context/WeatherApiConfigContext';
-const About = lazy(() => import('./About'));
-const Home = lazy(() => import('./Home'));
+import { Location } from './types';
+import CurrentWeatherDisplay from './ui/CurrentWeatherDisplay';
+import LocationSearch from './ui/LocationSearch';
 
-const App: React.FC = withWeatherApiConfig(() => (
-  <Router>
-    <Suspense fallback={<div>Loading...</div>}>
-      <nav>
-        <ul>
-          <li>
-            <Link to='/'>Home</Link>
-          </li>
-          <li>
-            <Link to='/about'>About</Link>
-          </li>
-        </ul>
-      </nav>
-      <Switch>
-        <Route path='/about'>
-          <About />
-        </Route>
-        <Route path='/'>
-          <Home />
-        </Route>
-      </Switch>
-    </Suspense>
-  </Router>
-));
+const App: React.FC = withWeatherApiConfig(() => {
+  const [location, setLocation] = useState<Location>();
+
+  const doUpdateLocation = (_e: unknown, value?: Location) => setLocation(value);
+
+  return (
+    <div>
+      <LocationSearch onSubmit={doUpdateLocation} />
+      {
+        (location) && (<CurrentWeatherDisplay location={location} />)
+      }
+    </div>
+  );
+});
 
 export default App;

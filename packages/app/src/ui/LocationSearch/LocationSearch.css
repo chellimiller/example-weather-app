@@ -1,0 +1,15 @@
+.location-search.form {
+  border: 1px solid red;
+}
+
+.location-search.form:focus {
+  background-color: pink;
+}
+
+.location-search.form:hover {
+  background-color: yellow;
+}
+
+.location-search.input {
+  border: 1px solid green;
+}
