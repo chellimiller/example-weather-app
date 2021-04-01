@@ -1,44 +1,4 @@
-/**
- * Result from an operation or request.
- */
-export type Result<T, ERROR = any> = ({
-  data: T;
-  error: undefined;
-}) | ({
-  data: undefined;
-  error: ERROR;
-});
-
-/**
- * Settings for a server.
- */
-export type ServerSettings = {
-
-  /** Port that the server is listening on. */
-  port: number;
-
-  /** Hostname of the server. */
-  hostname: string;
-}
-
-/**
- * Type of Weather API that is supported.
- */
-export enum WeatherApiConfigType {
-  OPEN_WEATHER_MAP = 'openweathermap.org',
-}
-
-/**
- * Weather API configuration that includes the API being accessed and the API key.
- */
-export type WeatherApiConfig = {
-
-  /** API being accessed. */
-  type: WeatherApiConfigType;
-
-  /** Unique key used to access the API. */
-  key: string;
-}
+import { Result } from './Result';
 
 /**
  * Type of error that can occur when reading an asset.

@@ -5,6 +5,7 @@ const app = express();
 
 const port = 4000;
 
+// There is a better way to do this so it can be broken up.
 app.get('/*', (request, response) => {
   const requestType = getRequestType(request.url);
 
