@@ -16,6 +16,8 @@ const calculateBackgroundTemperature = (weather?: Weather) => {
   if (weather.temperature.feelsLike <= 307) return 'bg-warm';
   return 'bg-hot';
 }
+const toCelsius = (kelvin: number) => kelvin - 273.15;
+const toFahrenheit = (kelvin: number) => (toCelsius(kelvin) * 9 / 5) + 32;
 
 const DEFAULT_LOCATION: Location = {
   type: LocationType.CITY_NAME,
@@ -35,7 +37,7 @@ const App: React.FC = withWeatherApiConfig(() => {
     <div className={['app', 'flex-center-content', bgClass].join(' ')}>
       <LocationSearch onSubmit={doUpdateLocation} />
       <div>
-        {weather && weather.temperature.feelsLike}
+        {weather && Math.round(toFahrenheit(weather.temperature.main))}
       </div>
     </div>
   );
