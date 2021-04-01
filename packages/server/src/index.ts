@@ -3,7 +3,7 @@ import { getRequestType, RequestType, sendAsset, sendPrivateAsset } from './util
 
 const app = express();
 
-const port = 3000;
+const port = 4000;
 
 app.get('/*', (request, response) => {
   const requestType = getRequestType(request.url);
