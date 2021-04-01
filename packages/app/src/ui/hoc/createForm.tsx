@@ -12,6 +12,7 @@ type BaseFormInput<T extends FormInputType, V> = {
   defaultValue: V;
   label?: string;
   placeholder?: string;
+  className?: string;
 }
 
 type TextInput = BaseFormInput<FormInputType.TEXT, string>;
@@ -71,7 +72,13 @@ export default function createForm<T extends FormInputMap, U>(config: FormConfig
         {
           // @todo #6 This can be moved out so it's not recalculated
           // @todo #6 Fix casting
-          config.order.map(key => (<input {...config.inputs[key] as any} key={key as string} name={key as string} />))
+          config.order.map(key => {
+            const inputProps = config.inputs[key] as any;
+            const name = `${key}`;
+            const className = ['input', `input-${inputProps.type}`, inputProps.className || ''].join(' ');
+
+            return (<input {...inputProps} key={name} name={name} className={className} />)
+          })
         }
       </form>
     )
