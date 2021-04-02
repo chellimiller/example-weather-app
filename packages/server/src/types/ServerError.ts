@@ -20,8 +20,9 @@ export enum ServerErrorCode {
   READ_ASSET_VALIDATE_002 = 'RAV002',
   /** Invalid value for object or property */
   READ_ASSET_VALIDATE_003 = 'RAV003',
-  /** JSON.parse Error */
-  READ_ASSET_VALIDATE_004 = 'RAV004',
+
+  /** JSON Parse error */
+  JSON_PARSE_000 = 'JP000',
 }
 
 type BaseServerError<C extends ServerErrorCode, T> = {
@@ -61,7 +62,7 @@ type ReadAssetValidationErrorCode =
   ServerErrorCode.READ_ASSET_VALIDATE_001 |
   ServerErrorCode.READ_ASSET_VALIDATE_002 |
   ServerErrorCode.READ_ASSET_VALIDATE_003 |
-  ServerErrorCode.READ_ASSET_VALIDATE_004;
+  ServerErrorCode.JSON_PARSE_000;
 
 export type ReadAssetValidationError = BaseServerError<ReadAssetValidationErrorCode, {
 

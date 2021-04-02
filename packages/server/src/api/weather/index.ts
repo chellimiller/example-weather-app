@@ -4,6 +4,10 @@ import { Request, Response } from 'express';
 import { Asset, HttpResponseCode, Result, ServerError, ServerErrorCode, Weather, WeatherApiConfig, WeatherQuery } from '../../types';
 import { readAsset } from '../../util';
 import validateWeatherApiConfig from '../../util/validateWeatherApiConfig';
+import createLogger from '../../logger';
+import { request } from 'node:http';
+
+const log = createLogger('weather');
 
 function extractWeatherQuery(request: Request): Result<WeatherQuery, ServerError> {
   const latQuery = request.query.lat;
@@ -36,49 +40,76 @@ function readWeatherApiConfig(): Promise<Asset<WeatherApiConfig>> {
 
 function requestWeather(query: WeatherQuery): Promise<Result<Weather, ServerError>> {
   return new Promise(async resolve => {
+    log.trace('Reading Weather API config');
     const asset = await readWeatherApiConfig();
 
     if (asset.error) {
+      log.trace('Could not Weather API config');
       resolve(asset);
       return;
     }
 
+    log.trace('Read Weather API config');
+
+    log.trace('Building weather URL');
     const url = buildWeatherUrl(query, asset.data);
 
-    https.request(url, httpsResponse => {
+    log.trace(`Sending HTTPS request to '${url}'`);
+    const request = https.request(url, httpsResponse => {
+      const data: string[] = [];
 
-      httpsResponse.on('data', (data) => {
-        resolve({ data: JSON.parse(data) });
+      httpsResponse.on('data', (chunk) => {
+        data.push(chunk)
+        log.trace(`On data`, chunk);
       })
 
-      httpsResponse.on('error', (error) => {
-        resolve({ error: { code: ServerErrorCode.API_WEATHER_EXTERNAL_000, data: error } });
+      httpsResponse.on('end', () => {
+        log.trace(`On end`, data);
+        try {
+          resolve({ data: JSON.parse(data.join('')) });
+        } catch (error) {
+          resolve({ error: { code: ServerErrorCode.JSON_PARSE_000, data: error } });
+        }
       })
     })
+
+    request.on('error', (error) => {
+      log.trace(`On error`, error);
+      resolve({ error: { code: ServerErrorCode.API_WEATHER_EXTERNAL_000, data: error } });
+    })
+
+    request.end();
   })
 }
 
 export function weatherApiProxy(request: Request, response: Response<any, any>): Promise<void> {
   return new Promise(async resolve => {
+    log.trace('Extracting query');
     const query = extractWeatherQuery(request);
+    log.trace('Extracted query');
 
     if (query.error) {
       response.status(HttpResponseCode.BAD_REQUEST).send(query.error.code);
-      console.error(`ERROR ${query.error.code}: Bad request to '${request.url}'`, query.error);
+      log.error(query.error.code, `Bad request to '${request.url}'`, query.error);
       resolve();
       return;
     }
 
+    log.trace('Requesting weather from API');
     const weather = await requestWeather(query.data);
+    log.trace('Requested weather from API');
 
     if (weather.error) {
       response.status(HttpResponseCode.BAD_REQUEST).send(weather.error.code);
-      console.error(`ERROR ${weather.error.code}: Bad request to '${request.url}'`, weather.error);
+      log.error(weather.error.code, `Bad request to '${request.url}'`, weather.error);
       resolve();
       return;
     }
 
+    log.trace('Send weather data');
     response.send(weather.data);
+    log.trace('Sent weather data');
+
     resolve();
   })
 }

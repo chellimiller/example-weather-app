@@ -1,7 +1,7 @@
 import https from 'https';
 import path from 'path';
 import { Request, Response } from 'express';
-import { Asset, HttpResponseCode, Result, ServerError, ServerErrorCode, CityLocationQuery, WeatherApiConfig, LocationQuery, LocationQueryType, City } from '../../types';
+import { Asset, HttpResponseCode, Result, ServerError, ServerErrorCode, CityLocationQuery, WeatherApiConfig, LocationQueryType, City } from '../../types';
 import { readAsset } from '../../util';
 import validateWeatherApiConfig from '../../util/validateWeatherApiConfig';
 

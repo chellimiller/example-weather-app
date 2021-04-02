@@ -30,7 +30,7 @@ const validateWeatherApiConfig: AssetValidator<WeatherApiConfig> = (config: any)
       configObject = JSON.parse(config);
     } catch {
       return createErrorResult({
-        code: ServerErrorCode.READ_ASSET_VALIDATE_004,
+        code: ServerErrorCode.JSON_PARSE_000,
         message: `Cannot parse JSON object`,
       })
     }
@@ -40,7 +40,7 @@ const validateWeatherApiConfig: AssetValidator<WeatherApiConfig> = (config: any)
     }
 
     return createErrorResult({
-      code: ServerErrorCode.READ_ASSET_VALIDATE_004,
+      code: ServerErrorCode.JSON_PARSE_000,
       message: `Result from JSON.parse is not an object`,
     })
   }
