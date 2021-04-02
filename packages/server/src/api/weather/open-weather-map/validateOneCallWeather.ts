@@ -6,8 +6,6 @@ import validateOneCallHourlyWeather from './validateOneCallHourlyWeather';
 
 export default function validateOneCallWeather(unvalidated: object): Result<OneCallWeather, ObjectValidationError> {
 
-  const data: OneCallWeather = unvalidated as OneCallWeather;
-
   const createInvalidTypeResult = (property: keyof OneCallWeather, expectedType: string) => ({
     error: {
       code: ServerErrorCode.VALIDATION_003,
@@ -18,34 +16,56 @@ export default function validateOneCallWeather(unvalidated: object): Result<OneC
     }
   });
 
-  if (typeof data.lat !== 'number') createInvalidTypeResult('lat', 'number');
-  if (typeof data.lon !== 'number') createInvalidTypeResult('lon', 'number');
-  if (typeof data.timezone !== 'string') createInvalidTypeResult('timezone', 'string');
-  if (typeof data.timezone_offset !== 'number') createInvalidTypeResult('timezone_offset', 'number');
-  if (typeof data.current !== 'object') createInvalidTypeResult('current', 'object');
+  const {
+    lat,
+    lon,
+    timezone,
+    timezone_offset,
+    current,
+    hourly = [],
+    daily = [],
+    alerts = [],
+  }: OneCallWeather = unvalidated as OneCallWeather;
+
+  if (typeof lat !== 'number') createInvalidTypeResult('lat', 'number');
+  if (typeof lon !== 'number') createInvalidTypeResult('lon', 'number');
+  if (typeof timezone !== 'string') createInvalidTypeResult('timezone', 'string');
+  if (typeof timezone_offset !== 'number') createInvalidTypeResult('timezone_offset', 'number');
+  if (typeof current !== 'object') createInvalidTypeResult('current', 'object');
 
   // Kind of weird that we're passing in 'array' since it's not typeof, but it's good enough for now
-  if (!Array.isArray(data.hourly)) createInvalidTypeResult('hourly', 'array');
-  if (!Array.isArray(data.daily)) createInvalidTypeResult('hourly', 'array');
-  if (!Array.isArray(data.alerts)) createInvalidTypeResult('hourly', 'array');
+  if (!Array.isArray(hourly)) createInvalidTypeResult('hourly', 'array');
+  if (!Array.isArray(daily)) createInvalidTypeResult('daily', 'array');
+  if (!Array.isArray(alerts)) createInvalidTypeResult('alerts', 'array');
 
-  const validateCurrentResult = validateOneCallCurrentWeather(data.current);
+  const validateCurrentResult = validateOneCallCurrentWeather(current);
   if (validateCurrentResult.error) return validateCurrentResult;
 
-  for (let i = 0; i < data.hourly.length; i++) {
-    const validateHourlyResult = validateOneCallHourlyWeather(data.hourly[i], i);
+  for (let i = 0; i < hourly.length; i++) {
+    const validateHourlyResult = validateOneCallHourlyWeather(hourly[i], i);
     if (validateHourlyResult.error) return validateHourlyResult;
   }
 
-  for (let i = 0; i < data.daily.length; i++) {
-    const validateDailyResult = validateOneCallDailyWeather(data.daily[i], i);
+  for (let i = 0; i < daily.length; i++) {
+    const validateDailyResult = validateOneCallDailyWeather(daily[i], i);
     if (validateDailyResult.error) return validateDailyResult;
   }
 
-  for (let i = 0; i < data.alerts.length; i++) {
-    const validateAlertResult = validateOneCallDailyWeather(data.alerts[i], i);
+  for (let i = 0; i < alerts.length; i++) {
+    const validateAlertResult = validateOneCallDailyWeather(alerts[i], i);
     if (validateAlertResult.error) return validateAlertResult;
   }
+
+  const data = {
+    lat,
+    lon,
+    timezone,
+    timezone_offset,
+    current,
+    hourly,
+    daily,
+    alerts,
+  };
 
   return { data };
 }

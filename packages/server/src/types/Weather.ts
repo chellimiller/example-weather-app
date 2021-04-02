@@ -13,6 +13,7 @@ export type CurrentWeather = {
   temperature: number;
   feelsLike: number;
   humidity: number;
+  conditions: WeatherCondition[];
 }
 
 export type HourlyWeather = {
@@ -20,6 +21,7 @@ export type HourlyWeather = {
   feelsLike: number;
   humidity: number;
   precipitationChance: number;
+  conditions: WeatherCondition[];
 }
 
 export type DailyTemperature = {
@@ -45,6 +47,7 @@ export type DailyWeather = {
   feelsLike: DailyFeelsLikeTemperature;
   humidity: number;
   precipitationChance: number;
+  conditions: WeatherCondition[];
 }
 
 export type WeatherAlert = {
@@ -60,7 +63,7 @@ export type Weather = {
   lon: number;
   timezone: string;
   timezoneOffset: number;
-  curent: CurrentWeather;
+  current: CurrentWeather;
   hourly: HourlyWeather[];
   daily: DailyWeather[];
   alerts: WeatherAlert[];

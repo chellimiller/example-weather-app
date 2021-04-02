@@ -47,49 +47,49 @@ const validateWeatherApiConfig: AssetValidator<WeatherApiConfig> = (config: any)
 
   if (!config) {
     return createErrorResult({
-      code: ServerErrorCode.READ_ASSET_VALIDATE_002,
+      code: ServerErrorCode.VALIDATION_002,
       message: `Falsy config value`,
     })
   }
 
   if (typeof config !== 'object') {
     return createErrorResult({
-      code: ServerErrorCode.READ_ASSET_VALIDATE_001,
+      code: ServerErrorCode.VALIDATION_001,
       message: `Type of 'config' should be 'object' but is '${typeof config}'`,
     })
   }
 
   if (!config.type) {
     return createErrorResult({
-      code: ServerErrorCode.READ_ASSET_VALIDATE_002,
+      code: ServerErrorCode.VALIDATION_002,
       message: `Missing config.type`,
     })
   }
 
   if (!config.key) {
     return createErrorResult({
-      code: ServerErrorCode.READ_ASSET_VALIDATE_002,
+      code: ServerErrorCode.VALIDATION_002,
       message: `Missing config.key`,
     })
   }
 
   if (typeof config.type !== 'string') {
     return createErrorResult({
-      code: ServerErrorCode.READ_ASSET_VALIDATE_002,
+      code: ServerErrorCode.VALIDATION_002,
       message: `Type of 'config.type' should be 'string' but is '${typeof config.type}'`,
     })
   }
 
   if (typeof config.key !== 'string') {
     return createErrorResult({
-      code: ServerErrorCode.READ_ASSET_VALIDATE_002,
+      code: ServerErrorCode.VALIDATION_002,
       message: `Type of 'config.key' should be 'string' but is '${typeof config.key}'`,
     })
   }
 
   if (!Object.values(WeatherApiConfigType).includes(config.type)) {
     return createErrorResult({
-      code: ServerErrorCode.READ_ASSET_VALIDATE_003,
+      code: ServerErrorCode.VALIDATION_003,
       message: `'config.type' should be one of [${Object.values(WeatherApiConfigType)}] but is '${config.key}'`,
     })
   }

@@ -4,6 +4,12 @@ export enum ServerErrorCode {
   /** Invalid query parameters to weather API. Unknown reason. */
   API_WEATHER_QUERY_000 = 'AWQ000',
 
+  /** Invalid `lat` query parameter to weather API. Unknown reason. */
+  API_WEATHER_QUERY_LAT_000 = 'AWQLA000',
+
+  /** Invalid `lon` query parameter to weather API. Unknown reason. */
+  API_WEATHER_QUERY_LON_000 = 'AWQLO000',
+
   API_LOCATION_QUERY_000 = 'ALQ000',
 
   /** Unknown error reading file */
@@ -36,15 +42,17 @@ type BaseServerError<C extends ServerErrorCode, T> = {
 }
 
 type ApiWeatherInvalidQueryParam = BaseServerError<ServerErrorCode.API_WEATHER_QUERY_000, {
-  latQuery: any,
-  lonQuery: any,
+  query: any,
   lat: number,
   lon: number,
 }>;
 
 type ApiLocationQueryParam = BaseServerError<ServerErrorCode.API_LOCATION_QUERY_000, { q: any }>;
 
-type ExternalHttpsRequestError = BaseServerError<ServerErrorCode.EXTERNAL_HTTPS_REQUEST_000, any>;
+type ExternalHttpsRequestError = BaseServerError<ServerErrorCode.EXTERNAL_HTTPS_REQUEST_000, {
+  httpCode: number;
+  error: Error;
+}>;
 
 type ReadAssetFileError = BaseServerError<ServerErrorCode.READ_ASSET_FILE_000 | ServerErrorCode.READ_ASSET_FILE_001, {
 
@@ -98,10 +106,11 @@ export type ObjectValidationError = BaseServerError<ValidationErrorCode, {
  */
 export type ReadAssetError = ReadAssetFileError | ReadAssetValidationError;
 
+type UnknownServerError = BaseServerError<ServerErrorCode.UNKNOWN_ERROR, any>;
+
 export type ServerError =
-  ObjectValidationError |
   ApiLocationQueryParam |
-  ExternalHttpsRequestError |
   ApiWeatherInvalidQueryParam |
-  ReadAssetFileError |
-  ReadAssetValidationError;
+  ExternalHttpsRequestError |
+  ObjectValidationError |
+  ReadAssetFileError | UnknownServerError;
