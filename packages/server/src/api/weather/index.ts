@@ -1,7 +1,7 @@
 import https from 'https';
 import path from 'path';
 import { Request, Response } from 'express';
-import { Asset, HttpResponseCode, Result, ServerError, ServerErrorCode, Weather, WeatherApiConfig, WeatherQuery } from '../../types';
+import { Asset, HttpResponseCode, ObjectValidationError, Result, ServerError, ServerErrorCode, Weather, WeatherApiConfig, WeatherQuery } from '../../types';
 import { readAsset, sendHttpsRequest } from '../../util';
 import validateWeatherApiConfig from '../../util/validateWeatherApiConfig';
 import createLogger from '../../logger';
@@ -37,7 +37,7 @@ function readWeatherApiConfig(): Promise<Asset<WeatherApiConfig>> {
   return readAsset(path.join('config', 'weather-api.json'), validateWeatherApiConfig);
 }
 
-function mapData(data: string): Result<Weather, ServerError> {
+function mapData(data: string): Result<Weather, ObjectValidationError> {
   return {
     data: undefined,
     error: {
@@ -45,8 +45,6 @@ function mapData(data: string): Result<Weather, ServerError> {
       data: {
         message: `Nothing went wrong`,
         value: data,
-        url: '',
-        filePath: '',
       },
     }
   }

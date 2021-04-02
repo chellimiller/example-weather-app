@@ -5,7 +5,7 @@ import { ObjectValidationError, Result, ServerError, ServerErrorCode } from '../
 
 type Options = RequestOptions | string | URL;
 
-export type DataMapper<T = string> = (data: string) => Result<T, ServerError>;
+export type DataMapper<T = string> = (data: string) => Result<T, ObjectValidationError>;
 
 const log = createLogger('sendHttpsRequest');
 
