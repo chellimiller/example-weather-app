@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Asset, ReadAssetErrorType } from '../types';
+import { Asset, ServerErrorCode } from '../types';
 import readAsset from './readAsset';
 
 /**
@@ -16,12 +16,12 @@ export default function sendAsset(url: string, response: Response<any, any>): Pr
         return;
       }
 
-      if (asset.error.type === ReadAssetErrorType.READ_FILE && asset.error.details.code === 'ENOENT') {
+      if (asset.error.code === ServerErrorCode.READ_ASSET_FILE_001) {
         response.status(404).send(`Cannot find resource '${url}'`);
         return;
       }
 
-      response.status(500).send(`Cannot access resource '${url}'\nError Message: '${asset.error.message}'`);
+      response.status(500).send(asset.error.code);
     },
 
     // readAsset should never throw/reject, so this implies that some unknown error occurred.

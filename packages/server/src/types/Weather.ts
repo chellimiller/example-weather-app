@@ -1,6 +1,6 @@
 export type WeatherQuery = {
   lat: number;
-  long: number;
+  lon: number;
 }
 
 export type WeatherCondition = {
@@ -53,4 +53,15 @@ export type WeatherAlert = {
   start: number;
   end: number;
   description: string;
+}
+
+export type Weather = {
+  lat: number;
+  lon: number;
+  timezone: string;
+  timezoneOffset: number;
+  curent: CurrentWeather;
+  hourly: HourlyWeather[];
+  daily: DailyWeather[];
+  alerts: WeatherAlert[];
 }

@@ -11,6 +11,11 @@ export enum RequestType {
   /**
    * This is a Weather API request.
    */
+  API_LOCATION = 'API_LOCATION',
+
+  /**
+   * This is a Weather API request.
+   */
   API_WEATHER = 'API_WEATHER',
 
   /**
@@ -45,7 +50,8 @@ const FILENAME_REGEX = /\.\w+$/;
 export default function getRequestType(url: string): RequestType {
   // Determine if the request is to the API.
   if (url.startsWith('/api/') || url === '/api') {
-    if (url.startsWith('/api/weather/') || url === '/api/weather') return RequestType.API_WEATHER;
+    if (url.startsWith('/api/location')) return RequestType.API_LOCATION;
+    if (url.startsWith('/api/weather')) return RequestType.API_WEATHER;
     return RequestType.API;
   }
 

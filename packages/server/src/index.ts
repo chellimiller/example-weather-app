@@ -1,4 +1,5 @@
 import express from 'express';
+import { weatherApiProxy } from './api/weather';
 import { getRequestType, RequestType, sendAsset, sendPrivateAsset } from './util';
 
 const app = express();
@@ -18,7 +19,10 @@ app.get('/*', (request, response) => {
       response.status(404).send(`Call to Unknown API: '${request.url}'`);
       break;
     case RequestType.API_WEATHER:
-      sendPrivateAsset('weather-api.json', request, response, serverSettings);
+      weatherApiProxy(request, response);
+      break;
+    case RequestType.API_WEATHER:
+      weatherApiProxy(request, response);
       break;
     case RequestType.BANNED:
       response.status(403).send(`Access to '${request.url}' is not allowed.`);

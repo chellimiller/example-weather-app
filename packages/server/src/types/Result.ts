@@ -3,8 +3,8 @@
  */
 export type Result<T, ERROR = any> = ({
   data: T;
-  error: undefined;
+  error?: undefined;
 }) | ({
-  data: undefined;
+  data?: undefined;
   error: ERROR;
 });

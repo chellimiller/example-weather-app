@@ -20,6 +20,8 @@ export type ZipCodeLocationQuery = {
   country?: CountryCode;
 }
 
+export type LocationQuery = CityLocationQuery | ZipCodeLocationQuery;
+
 export type City = {
   name: string;
   lat: number;
