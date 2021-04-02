@@ -1,10 +1,10 @@
 export enum ServerErrorCode {
+  EXTERNAL_HTTPS_REQUEST_000 = 'EHR000',
+
   /** Invalid query parameters to weather API. Unknown reason. */
   API_WEATHER_QUERY_000 = 'AWQ000',
-  API_WEATHER_EXTERNAL_000 = 'AWE000',
 
   API_LOCATION_QUERY_000 = 'ALQ000',
-  API_LOCATION_EXTERNAL_000 = 'AEQ000',
 
   /** Unknown error reading file */
   READ_ASSET_FILE_000 = 'RAF000',
@@ -39,8 +39,7 @@ type ApiWeatherInvalidQueryParam = BaseServerError<ServerErrorCode.API_WEATHER_Q
 
 type ApiLocationQueryParam = BaseServerError<ServerErrorCode.API_LOCATION_QUERY_000, { q: any }>;
 
-type ApiWeatherExternalRequestError = BaseServerError<ServerErrorCode.API_WEATHER_EXTERNAL_000, unknown>;
-type ApiLocationExternalRequestError = BaseServerError<ServerErrorCode.API_LOCATION_EXTERNAL_000, unknown>;
+type ExternalHttpsRequestError = BaseServerError<ServerErrorCode.EXTERNAL_HTTPS_REQUEST_000, any>;
 
 type ReadAssetFileError = BaseServerError<ServerErrorCode.READ_ASSET_FILE_000 | ServerErrorCode.READ_ASSET_FILE_001, {
 
@@ -56,6 +55,7 @@ type ReadAssetFileError = BaseServerError<ServerErrorCode.READ_ASSET_FILE_000 | 
   /** Error from reading the file. */
   details: NodeJS.ErrnoException;
 }>;
+
 
 type ReadAssetValidationErrorCode =
   ServerErrorCode.READ_ASSET_VALIDATE_000 |
@@ -95,8 +95,7 @@ export type ReadAssetError = ReadAssetFileError | ReadAssetValidationError;
 
 export type ServerError =
   ApiLocationQueryParam |
-  ApiWeatherExternalRequestError |
+  ExternalHttpsRequestError |
   ApiWeatherInvalidQueryParam |
-  ApiLocationExternalRequestError |
   ReadAssetFileError |
   ReadAssetValidationError;

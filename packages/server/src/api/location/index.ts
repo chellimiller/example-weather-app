@@ -2,7 +2,7 @@ import https from 'https';
 import path from 'path';
 import { Request, Response } from 'express';
 import { Asset, HttpResponseCode, Result, ServerError, ServerErrorCode, CityLocationQuery, WeatherApiConfig, LocationQueryType, City } from '../../types';
-import { readAsset } from '../../util';
+import { readAsset, sendHttpsRequest } from '../../util';
 import validateWeatherApiConfig from '../../util/validateWeatherApiConfig';
 
 function extractCityLocationQuery(request: Request): Result<CityLocationQuery, ServerError> {
@@ -73,6 +73,21 @@ function readWeatherApiConfig(): Promise<Asset<WeatherApiConfig>> {
   return readAsset(path.join('config', 'weather-api.json'), validateWeatherApiConfig);
 }
 
+function mapData(data: string): Result<City[], ServerError> {
+  return {
+    data: undefined,
+    error: {
+      code: ServerErrorCode.JSON_PARSE_000,
+      data: {
+        message: `Nothing went wrong`,
+        value: data,
+        url: '',
+        filePath: '',
+      },
+    }
+  }
+}
+
 function requestCities(query: CityLocationQuery): Promise<Result<City[], ServerError>> {
   return new Promise(async resolve => {
     const asset = await readWeatherApiConfig();
@@ -84,16 +99,7 @@ function requestCities(query: CityLocationQuery): Promise<Result<City[], ServerE
 
     const url = buildCityLocationUrl(query, asset.data);
 
-    https.request(url, httpsResponse => {
-
-      httpsResponse.on('data', (data) => {
-        resolve({ data: JSON.parse(data) });
-      })
-
-      httpsResponse.on('error', (error) => {
-        resolve({ error: { code: ServerErrorCode.API_LOCATION_EXTERNAL_000, data: error } });
-      })
-    })
+    resolve(sendHttpsRequest(url, mapData));
   })
 }
 

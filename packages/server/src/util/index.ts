@@ -10,5 +10,8 @@ export * from './readAsset';
 export { default as sendAsset } from './sendAsset';
 export * from './sendAsset';
 
+export { default as sendHttpsRequest } from './sendHttpsRequest';
+export * from './sendHttpsRequest';
+
 export { default as sendPrivateAsset } from './sendPrivateAsset';
 export * from './sendPrivateAsset';

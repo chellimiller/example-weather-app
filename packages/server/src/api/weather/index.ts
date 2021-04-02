@@ -2,10 +2,9 @@ import https from 'https';
 import path from 'path';
 import { Request, Response } from 'express';
 import { Asset, HttpResponseCode, Result, ServerError, ServerErrorCode, Weather, WeatherApiConfig, WeatherQuery } from '../../types';
-import { readAsset } from '../../util';
+import { readAsset, sendHttpsRequest } from '../../util';
 import validateWeatherApiConfig from '../../util/validateWeatherApiConfig';
 import createLogger from '../../logger';
-import { request } from 'node:http';
 
 const log = createLogger('weather');
 
@@ -38,6 +37,21 @@ function readWeatherApiConfig(): Promise<Asset<WeatherApiConfig>> {
   return readAsset(path.join('config', 'weather-api.json'), validateWeatherApiConfig);
 }
 
+function mapData(data: string): Result<Weather, ServerError> {
+  return {
+    data: undefined,
+    error: {
+      code: ServerErrorCode.JSON_PARSE_000,
+      data: {
+        message: `Nothing went wrong`,
+        value: data,
+        url: '',
+        filePath: '',
+      },
+    }
+  }
+}
+
 function requestWeather(query: WeatherQuery): Promise<Result<Weather, ServerError>> {
   return new Promise(async resolve => {
     log.trace('Reading Weather API config');
@@ -49,36 +63,11 @@ function requestWeather(query: WeatherQuery): Promise<Result<Weather, ServerErro
       return;
     }
 
-    log.trace('Read Weather API config');
-
     log.trace('Building weather URL');
     const url = buildWeatherUrl(query, asset.data);
 
     log.trace(`Sending HTTPS request to '${url}'`);
-    const request = https.request(url, httpsResponse => {
-      const data: string[] = [];
-
-      httpsResponse.on('data', (chunk) => {
-        data.push(chunk)
-        log.trace(`On data`, chunk);
-      })
-
-      httpsResponse.on('end', () => {
-        log.trace(`On end`, data);
-        try {
-          resolve({ data: JSON.parse(data.join('')) });
-        } catch (error) {
-          resolve({ error: { code: ServerErrorCode.JSON_PARSE_000, data: error } });
-        }
-      })
-    })
-
-    request.on('error', (error) => {
-      log.trace(`On error`, error);
-      resolve({ error: { code: ServerErrorCode.API_WEATHER_EXTERNAL_000, data: error } });
-    })
-
-    request.end();
+    resolve(sendHttpsRequest(url, mapData));
   })
 }
 
