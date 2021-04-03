@@ -5,6 +5,7 @@ import './App.css';
 import { setLocation, withStore } from './store';
 import { useSelectedCity, useSelectedCityWeather } from './store/hooks';
 import { useDispatch } from 'react-redux';
+import CurrentWeatherDisplay from './ui/CurrentWeatherDisplay';
 
 const calculateBackgroundTemperature = (weather?: Weather) => {
   if (!weather) return 'bg-default';
@@ -37,8 +38,7 @@ const App: React.FC = withStore(() => {
     <div className={['app', 'flex-center-content', bgClass].join(' ')}>
       <LocationSearch onSubmit={doUpdateLocation} />
       <div>
-        {weather && Math.round(toFahrenheit(weather.current.temperature))}
-        {weatherResult && weatherResult.message}
+        {weather && <CurrentWeatherDisplay weather={weather} />}
         {city ? `${city.name}, ${city.country}` : 'none'}
       </div>
     </div>
