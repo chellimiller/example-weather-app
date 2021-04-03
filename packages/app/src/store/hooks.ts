@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { City } from '../types';
-import { selectSelectedCity } from './selectors';
-import { AppState, WeatherQueryResult } from './types';
+import { selectSelectedCity, selectSelectedCityWeatherQueryResult } from './selectors';
+import { WeatherQueryResult } from './types';
 
 export function useSelectedCity(): City | undefined {
   return useSelector(
@@ -16,10 +16,5 @@ export function useSelectedCity(): City | undefined {
 }
 
 export function useSelectedCityWeather(): WeatherQueryResult | undefined {
-  return useSelector(
-    (state: AppState) => {
-      if (!state.location.selectedCityId) return undefined;
-      return state.weather.queries[state.location.selectedCityId];
-    },
-  )
+  return useSelector(selectSelectedCityWeatherQueryResult)
 }

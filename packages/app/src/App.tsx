@@ -7,7 +7,7 @@ import { useSelectedCity, useSelectedCityWeather } from './store/hooks';
 import { useDispatch } from 'react-redux';
 
 const calculateBackgroundTemperature = (weather?: Weather) => {
-  if (!weather) return '';
+  if (!weather) return 'bg-default';
   // These are inexact and based on personal preference
   // Freezing is pretty close to 0°C or 32°F
   if (weather.current.feelsLike <= 274) return 'bg-freezing';
