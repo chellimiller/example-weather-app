@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { Asset, ReadAssetErrorType } from '../types';
+import { Asset, HttpResponseCode, ServerErrorCode } from '../types';
 import readAsset from './readAsset';
 
 /**
@@ -16,18 +16,18 @@ export default function sendAsset(url: string, response: Response<any, any>): Pr
         return;
       }
 
-      if (asset.error.type === ReadAssetErrorType.READ_FILE && asset.error.details.code === 'ENOENT') {
-        response.status(404).send(`Cannot find resource '${url}'`);
+      if (asset.error.code === ServerErrorCode.READ_FILE_001) {
+        response.status(HttpResponseCode.NOT_FOUND).send(`Cannot find resource '${url}'`);
         return;
       }
 
-      response.status(500).send(`Cannot access resource '${url}'\nError Message: '${asset.error.message}'`);
+      response.status(HttpResponseCode.INTERNAL_SERVER_ERROR).send(asset.error.code);
     },
 
     // readAsset should never throw/reject, so this implies that some unknown error occurred.
     (error) => {
       console.log(error);
-      response.status(500).send('Unknown internal server error');
+      response.status(HttpResponseCode.INTERNAL_SERVER_ERROR).send('Unknown internal server error');
     },
   );
 }

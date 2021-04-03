@@ -1,4 +1,5 @@
 import express from 'express';
+import { HttpResponseCode } from './types';
 import { getRequestType, RequestType, sendAsset, sendPrivateAsset } from './util';
 
 const app = express();
@@ -14,13 +15,13 @@ app.get('/*', (request, response) => {
 
   switch (requestType) {
     case RequestType.API:
-      response.status(404).send(`Call to Unknown API: '${request.url}'`);
+      response.status(HttpResponseCode.NOT_FOUND).send(`Call to Unknown API: '${request.url}'`);
       break;
     case RequestType.API_WEATHER:
       sendPrivateAsset('weather-api.json', request, response, serverSettings);
       break;
     case RequestType.BANNED:
-      response.status(403).send(`Access to '${request.url}' is not allowed.`);
+      response.status(HttpResponseCode.FORBIDDEN).send(`Access to '${request.url}' is not allowed.`);
       break;
     case RequestType.ASSET:
       sendAsset(request.url, response);
