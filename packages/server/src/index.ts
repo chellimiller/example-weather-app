@@ -1,4 +1,5 @@
 import express from 'express';
+import { handleLocationApiRequest } from './api/location';
 import { handleWeatherApiRequest } from './api/weather';
 import createLogger from './logger';
 import { HttpResponseCode, ServerErrorCode } from './types';
@@ -20,8 +21,7 @@ app.get('/*', (request, response) => {
         response.status(HttpResponseCode.NOT_FOUND).send(`Call to Unknown API: '${request.url}'`);
         break;
       case RequestType.API_LOCATION:
-        handleWeatherApiRequest(request, response);
-        response.status(HttpResponseCode.INTERNAL_SERVER_ERROR).send(ServerErrorCode.NOT_IMPLEMENTED);
+        handleLocationApiRequest(request, response);
         break;
       case RequestType.API_WEATHER:
         handleWeatherApiRequest(request, response);

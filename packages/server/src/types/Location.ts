@@ -14,17 +14,18 @@ export type CityLocationQuery = {
   country?: CountryCode;
 }
 
-export type ZipCodeLocationQuery = {
+export type ZipcodeLocationQuery = {
   type: LocationQueryType.ZIP_CODE;
-  zipCode: string;
+  zipcode: string;
   country?: CountryCode;
 }
 
-export type LocationQuery = CityLocationQuery | ZipCodeLocationQuery;
+export type LocationQuery = CityLocationQuery | ZipcodeLocationQuery;
 
 export type City = {
   name: string;
   lat: number;
   lon: number;
   country: CountryCode;
+  state?: UsStateCode;
 }
