@@ -1,4 +1,4 @@
-import { LocationType, Location } from '../../types';
+import { LocationQuery } from '../../types';
 import createForm, { FormInputType } from '../hoc/createForm';
 import './LocationSearch.css';
 
@@ -11,15 +11,15 @@ export default createForm({
       placeholder: 'City, State, US or City, Country',
     }
   },
-  mapFormObject: (formObject): Location | undefined => {
+  mapFormObject: (formObject): LocationQuery | undefined => {
     // @todo #6 Better mapping and error handling
     if (formObject.location) {
-      const [city, stateCode, countryCode] = formObject.location.split(',').map(item => item.trim());
+      const [city, state, country] = formObject.location.split(',').map(item => item.trim());
       return {
-        type: LocationType.CITY_NAME,
         city,
-        stateCode,
-        countryCode,
+        state,
+        country,
+        zipcode: undefined,
       }
     }
 

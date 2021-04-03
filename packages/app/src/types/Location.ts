@@ -1,37 +1,27 @@
-export enum LocationType {
-  // COORDINATES = 'COORDINATES',
-  POSTAL_CODE = 'POSTAL_CODE',
-  CITY_NAME = 'CITY_NAME',
-}
+export type UsStateCode = string;
 
-type BaseLocation<T extends LocationType> = {
-  type: T;
-}
+export type CountryCode = string;
 
-// export type Coordinates = BaseLocation<LocationType.COORDINATES> & {
-//   latitude: number;
-//   longitude: number;
-// }
-
-export type PostalCode = BaseLocation<LocationType.POSTAL_CODE> & {
-
-  /** Postal codes in different countries may not just be numeric. */
-  code: string;
-
-  /** Defaults to `US`. */
-  countryCode?: string;
-}
-
-export type CityName = BaseLocation<LocationType.CITY_NAME> & {
-
-  /** Name of the city */
+export type CityLocationQuery = {
+  zipcode?: undefined;
   city: string;
-
-  /** State code. Only available in US locations. */
-  stateCode?: string;
-
-  /** Defaults to `US`. */
-  countryCode?: string;
+  state?: UsStateCode;
+  country?: CountryCode;
 }
 
-export type Location = PostalCode | CityName;
+export type ZipcodeLocationQuery = {
+  zipcode: string;
+  city?: undefined;
+  state?: undefined;
+  country?: CountryCode;
+}
+
+export type LocationQuery = CityLocationQuery | ZipcodeLocationQuery;
+
+export type City = {
+  name: string;
+  lat: number;
+  lon: number;
+  country: CountryCode;
+  state?: UsStateCode;
+}

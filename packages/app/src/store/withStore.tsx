@@ -1,12 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { combineReducers, createStore, Reducer } from 'redux';
-import location from './location';
-import { AppAction, AppState } from './types';
-import weather from './weather';
+import { applyMiddleware, createStore } from 'redux';
+import { handleRequestWeather, handleSetLocation } from './middleware';
+import reducer from './reducer';
 
-const reducer: Reducer<AppState, AppAction> = combineReducers({ weather, location });
-const store = createStore(reducer);
+const store = createStore(
+  reducer,
+  applyMiddleware(handleSetLocation, handleRequestWeather),
+);
 
 export default function withStore<P>(Component: React.FC<P>): React.FC<P> {
   return (props: P) => (

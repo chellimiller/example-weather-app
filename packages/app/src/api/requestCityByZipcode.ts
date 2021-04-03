@@ -1,26 +1,23 @@
-import { ResultStatus, WeatherApiConfig } from '../types';
+import { City, ResultStatus, ZipcodeLocationQuery } from '../types';
 import sendFetchRequest, { FetchResult } from './sendFetchRequest';
 
-/**
- * Request the `WeatherApiConfig` from the server.
- *
- * @returns Promise with result from accessing the `WeatherApiConfig` from the server.
- */
-export default function getWeatherApiConfig(): Promise<FetchResult<WeatherApiConfig>> {
-  return sendFetchRequest('/api/weather').then(
+export default function requestCityByZipcode(query: ZipcodeLocationQuery): Promise<FetchResult<City>> {
+  const url = `/api/location?zip=${[query.zipcode, query.country].filter(value => !!value).join(',')}`;
+
+  return sendFetchRequest(url).then(
     (result: FetchResult<Response>) => {
       if (result.status === ResultStatus.DATA_LOAD) {
         return result.data.json().then(
           (data) => ({
             status: ResultStatus.DATA_LOAD,
-            message: 'Successfully accessed Weather API configuration',
+            message: 'Success',
             data,
           }),
 
           // @todo #5 Figure out why this needs to be casted as any.
           (error) => ({
             status: ResultStatus.ERROR,
-            message: 'Cannot parse Weather API configuration',
+            message: 'Cannot parse city',
             error,
           } as any),
         )
